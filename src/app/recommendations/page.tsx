@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { RecommendationDisplay } from '@/components/recommendations/recommendation-display';
 import { AuthGuard } from '@/components/auth/auth-guard';
 import { parseResponses, generateVaccineRecommendations } from '@/lib/recommendation-algorithm';
 
-export default function RecommendationsPage() {
+// Create a client component that uses useSearchParams
+function RecommendationsContent() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = React.useState(true);
   const [recommendations, setRecommendations] = React.useState([]);
@@ -61,5 +62,14 @@ export default function RecommendationsPage() {
         )}
       </div>
     </AuthGuard>
+  );
+}
+
+// Main page component
+export default function RecommendationsPage() {
+  return (
+    <Suspense fallback={<div>Loading recommendations...</div>}>
+      <RecommendationsContent />
+    </Suspense>
   );
 }
